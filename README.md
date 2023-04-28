@@ -1,6 +1,6 @@
 ﻿# AvatarCreatorUtils
 
-A [NeosModLoader](https://github.com/neos-modding-group/NeosModLoader) mod for [Neos VR](https://neos.com/). Various changes to the avatar creator
+A [NeosModLoader](https://github.com/neos-modding-group/NeosModLoader) mod for [Neos VR](https://neos.com/). Options to add info to avatars during creation and clean up proxies
 
 ## Installation
 1. Install [NeosModLoader](https://github.com/neos-modding-group/NeosModLoader).

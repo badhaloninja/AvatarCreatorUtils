@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AvatarCreatorUtils")]
-[assembly: AssemblyDescription("Various changes to the avatar creator")]
+[assembly: AssemblyDescription("Options to add info to avatars during creation and clean up proxies")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("badhaloninja")]
 [assembly: AssemblyProduct("AvatarCreatorUtils")]
-[assembly: AssemblyCopyright("Copyright © badhaloninja 2022")]
+[assembly: AssemblyCopyright("Copyright © badhaloninja 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
