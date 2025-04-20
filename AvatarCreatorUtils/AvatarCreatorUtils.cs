@@ -25,7 +25,7 @@ namespace AvatarCreatorUtils
         private static ModConfiguration config;
         public override void OnEngineInit()
         {
-            Harmony harmony = new("me.badhaloninja.AvatarCreatorUtils");
+            Harmony harmony = new("ninja.badhalo.AvatarCreatorUtils");
             harmony.PatchAll();
 
             config = GetConfiguration();
