@@ -1,35 +1,31 @@
 using FrooxEngine;
 using HarmonyLib;
-using NeosModLoader;
-using System;
+using ResoniteModLoader;
 using FrooxEngine.FinalIK;
 using FrooxEngine.CommonAvatar;
 using FrooxEngine.UIX;
-using BaseX;
-using FrooxEngine.LogiX.WorldModel;
+using Elements.Core;
 
 namespace AvatarCreatorUtils
 {
-    public class AvatarCreatorUtils : NeosMod
+    public class AvatarCreatorUtils : ResoniteMod
     {
         public override string Name => "AvatarCreatorUtils";
         public override string Author => "badhaloninja";
-        public override string Version => "1.0.0";
+        public override string Version => "2.0.0";
         public override string Link => "https://github.com/badhaloninja/AvatarCreatorUtils";
 
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<bool> GroupProxies = new ModConfigurationKey<bool>("group_proxies", "Put proxies under a 'Proxies' root", () => true);
+        private static readonly ModConfigurationKey<bool> GroupProxies = new("group_proxies", "Put proxies under a 'Proxies' root", () => true);
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<bool> AddVariableSpace = new ModConfigurationKey<bool>("add_avatar_variable_space", "Add an Avatar variable space", () => true);
+        private static readonly ModConfigurationKey<bool> AddVariableSpace = new("add_avatar_variable_space", "Add an Avatar variable space", () => true);
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<string> AvatarVariableSpaceName = new ModConfigurationKey<string>("avatar_variable_space_name", "Avatar variable space name", () => "Avatar");
-
-
+        private static readonly ModConfigurationKey<string> AvatarVariableSpaceName = new("avatar_variable_space_name", "Avatar variable space name", () => "Avatar");
 
         private static ModConfiguration config;
         public override void OnEngineInit()
         {
-            Harmony harmony = new Harmony("me.badhaloninja.AvatarCreatorUtils");
+            Harmony harmony = new("me.badhaloninja.AvatarCreatorUtils");
             harmony.PatchAll();
 
             config = GetConfiguration();
@@ -42,7 +38,7 @@ namespace AvatarCreatorUtils
             public static void CleanupProxies(VRIKAvatar __instance, AvatarPoseNode __result)
             {
                 if (!config.GetValue(GroupProxies)) return;
-                __result.Slot.Parent = __instance.Slot.FindOrAdd("Proxies");
+                __result.Slot.Parent = __instance.Slot.FindChildOrAdd("Proxies");
             }
 
             [HarmonyPostfix]
@@ -66,12 +62,14 @@ namespace AvatarCreatorUtils
             [HarmonyPatch(typeof(AvatarCreator), "OnAttach")]
             public static void AppendAvatarCreator(AvatarCreator __instance)
             {
-                var panel = __instance.Slot.GetComponentInChildren<NeosCanvasPanel>();
-                if (panel?.Canvas == null) return;
+                var canvas = __instance.Slot.GetComponentInChildren<Canvas>();
+                var verticalLayout = canvas?.Slot?.GetComponentInChildren<VerticalLayout>();
+                if (verticalLayout == null) return;
 
-                panel.CanvasSize = new float2(300, 640);
+                canvas.Size.Value = new float2(360, 780);
 
-                var ui = new UIBuilder(panel.Canvas);
+                var ui = new UIBuilder(verticalLayout.Slot);
+                RadiantUI_Constants.SetupEditorStyle(ui, false);
 
                 __instance.Slot.AttachComponent<DynamicVariableSpace>().SpaceName.Value = "AvatarCreator";
                 var data = __instance.Slot.AddSlot("Data");
@@ -88,10 +86,11 @@ namespace AvatarCreatorUtils
                 var thumbnail = data.AttachComponent<AssetLoader<ITexture2D>>();
                 thumbnail.Asset.SyncWithVariable("AvatarCreator/Thumbnail");
 
-                ui.NestInto(ui.Root[0]);
+                //ui.NestInto(ui.Root[0]);
 
                 ui.Style.MinHeight = 24f;
                 ui.Text("Avatar Info:");
+
                 SyncMemberEditorBuilder.Build(name.Value, "Avatar Name", null, ui);
                 SyncMemberEditorBuilder.Build(link.Value, "Avatar Link", null, ui);
                 SyncMemberEditorBuilder.Build(versionText.Value, "Version Text", null, ui);
@@ -102,7 +101,6 @@ namespace AvatarCreatorUtils
             }
         }
 
-
         private static void SetupAbout(Slot data, Slot root)
         {
             TryAddComment(data, root, "AvatarCreator/Link");
@@ -111,7 +109,7 @@ namespace AvatarCreatorUtils
             if (TryReadDynamicValue(data, "AvatarCreator/Thumbnail", out IAssetProvider<ITexture2D> thumbnail) && thumbnail != null)
             {
                 var t2dAsset = thumbnail as IAssetProvider<Texture2D>;
-                var assetLoader = root.FindOrAdd("About").AttachComponent<AssetLoader<Texture2D>>();
+                var assetLoader = root.FindChildOrAdd("About").AttachComponent<AssetLoader<Texture2D>>();
                 assetLoader.Asset.Target = t2dAsset;
 
                 var thumbnailSource = root.AttachComponent<ItemTextureThumbnailSource>();
@@ -133,7 +131,7 @@ namespace AvatarCreatorUtils
                 }
             }
 
-            Slot about = root.Find("About");
+            Slot about = root.FindChild("About");
             if (about != null) about.OrderOffset = -10;
         }
 
@@ -141,7 +139,7 @@ namespace AvatarCreatorUtils
         {
             if (TryReadDynamicValue(avatarCreatorData, variableName, out string value) && value != null)
             {
-                AvatarRoot.FindOrAdd("About").AttachComponent<Comment>().Text.Value = value;
+                AvatarRoot.FindChildOrAdd("About").AttachComponent<Comment>().Text.Value = value;
             }
         }
 
@@ -157,5 +155,4 @@ namespace AvatarCreatorUtils
             return dynamicVariableSpace.TryReadValue(text, out value);
         }
     }
-
 }
