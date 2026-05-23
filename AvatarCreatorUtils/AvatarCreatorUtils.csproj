@@ -20,7 +20,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -45,11 +45,7 @@
     <AppPath Condition="Exists('E:\SteamLibrary\steamapps\common\$(AppName)')">E:\SteamLibrary\steamapps\common\$(AppName)\</AppPath>
     <AppPath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/$(AppName)/')">$(HOME)/.steam/steam/steamapps/common/$(AppName)/</AppPath>
     <AppPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\$(AppName)\')">C:\Program Files (x86)\Steam\steamapps\common\$(AppName)\</AppPath>
-
-    <AppData Condition="Exists('$(AppPath)$(AppName)_Data')">$(AppPath)$(AppName)_Data\Managed\</AppData>
-
-    <AlternateDataPath>$(AppPath)\Alt\</AlternateDataPath>
-    <AlternateDataPath Condition="Exists('$(AppPath)')">$(AppPath)_altData</AlternateDataPath>
+    <AppPath Condition="Exists('P:\SteamLibrary\steamapps\common\$(AppName)')">P:\SteamLibrary\steamapps\common\$(AppName)\</AppPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -62,19 +58,19 @@
       <HintPath Condition="Exists('$(AppPath)0Harmony.dll')">$(AppPath)0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="FrooxEngine">
-      <HintPath>$(AppData)FrooxEngine.dll</HintPath>
+      <HintPath>$(AppPath)FrooxEngine.dll</HintPath>
     </Reference>
     <Reference Include="SkyFrost.Base">
-      <HintPath>$(AppData)SkyFrost.Base.dll</HintPath>
+      <HintPath>$(AppPath)SkyFrost.Base.dll</HintPath>
     </Reference>
     <Reference Include="Elements.Core">
-      <HintPath>$(AppData)Elements.Core.dll</HintPath>
+      <HintPath>$(AppPath)Elements.Core.dll</HintPath>
     </Reference>
     <Reference Include="ProtoFluxBindings">
-      <HintPath>$(AppData)ProtoFluxBindings.dll</HintPath>
+      <HintPath>$(AppPath)ProtoFluxBindings.dll</HintPath>
     </Reference>
     <Reference Include="ProtoFlux.Core">
-      <HintPath>$(AppData)ProtoFlux.Core.dll</HintPath>
+      <HintPath>$(AppPath)ProtoFlux.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   
