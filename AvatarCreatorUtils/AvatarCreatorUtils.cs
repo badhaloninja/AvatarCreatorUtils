@@ -5,6 +5,7 @@ using FrooxEngine.FinalIK;
 using FrooxEngine.CommonAvatar;
 using FrooxEngine.UIX;
 using Elements.Core;
+using System;
 
 namespace AvatarCreatorUtils
 {
@@ -33,6 +34,8 @@ namespace AvatarCreatorUtils
         [HarmonyPatch]
         class Patches
         {
+            public static WeakReference<AvatarCreator> avatarCreatorRef = new(null);
+
             [HarmonyPostfix]
             [HarmonyPatch(typeof(VRIKAvatar), "EnsurePoseNode")]
             public static void CleanupProxies(VRIKAvatar __instance, AvatarPoseNode __result)
@@ -41,21 +44,32 @@ namespace AvatarCreatorUtils
                 __result.Slot.Parent = __instance.Slot.FindChildOrAdd("Proxies");
             }
 
+            [HarmonyPrefix]
+            [HarmonyPatch(typeof(AvatarCreator), "RunCreate")]
+            public static void GetCreatorRef(AvatarCreator __instance)
+            {
+                avatarCreatorRef.SetTarget(__instance);
+            }
+
             [HarmonyPostfix]
             [HarmonyPatch(typeof(AvatarCreator), "EnsureHeadPositioner")]
-            public static void InjectStuff(AvatarCreator __instance, Slot root)
+            public static void InjectStuff(Slot root)
             {
+                avatarCreatorRef.TryGetTarget(out AvatarCreator instance);
+                if (instance == null) return;
+
                 if (config.GetValue(AddVariableSpace))
                 {
                     root.GetComponentOrAttach<DynamicVariableSpace>().SpaceName.Value = config.GetValue(AvatarVariableSpaceName);
                 }
 
-                if (TryReadDynamicValue(__instance.Slot, "AvatarCreator/AvatarName", out string avatarName) && avatarName != null)
+                if (TryReadDynamicValue(instance.Slot, "AvatarCreator/AvatarName", out string avatarName) && avatarName != null)
                 { // If AvatarName is set rename avatar root
                     root.Name = avatarName;
                 }
 
-                SetupAbout(__instance.Slot, root);
+                SetupAbout(instance.Slot, root);
+                avatarCreatorRef.SetTarget(null);
             }
 
             [HarmonyPostfix]
