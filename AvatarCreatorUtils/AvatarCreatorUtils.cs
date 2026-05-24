@@ -97,7 +97,7 @@ namespace AvatarCreatorUtils
 
                 name.VariableName.Value = "AvatarCreator/AvatarName";
                 link.VariableName.Value = "AvatarCreator/Link";
-                versionText.VariableName.Value = "AvatarCreator/VerionText";
+                versionText.VariableName.Value = "AvatarCreator/VersionText";
 
                 var thumbnail = data.AttachComponent<AssetLoader<ITexture2D>>();
                 thumbnail.Asset.SyncWithVariable("AvatarCreator/Thumbnail");
@@ -120,7 +120,7 @@ namespace AvatarCreatorUtils
         private static void SetupAbout(Slot data, Slot root)
         {
             TryAddComment(data, root, "AvatarCreator/Link");
-            TryAddComment(data, root, "AvatarCreator/VerionText");
+            TryAddComment(data, root, "AvatarCreator/VersionText");
 
             if (TryReadDynamicValue(data, "AvatarCreator/Thumbnail", out IAssetProvider<ITexture2D> thumbnail) && thumbnail != null)
             {
