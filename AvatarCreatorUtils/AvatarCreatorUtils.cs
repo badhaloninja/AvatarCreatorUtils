@@ -80,7 +80,9 @@ namespace AvatarCreatorUtils
                 var verticalLayout = canvas?.Slot?.GetComponentInChildren<VerticalLayout>();
                 if (verticalLayout == null) return;
 
-                canvas.Size.Value = new float2(360, 780);
+                // Append the height of our new fields to the canvas' size
+                // Also make the canvas slightly wider
+                canvas.Size.Value += new float2(40, 216);
 
                 var ui = new UIBuilder(verticalLayout.Slot);
                 RadiantUI_Constants.SetupEditorStyle(ui, false);
