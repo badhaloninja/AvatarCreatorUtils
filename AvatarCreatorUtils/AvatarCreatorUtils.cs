@@ -78,6 +78,7 @@ namespace AvatarCreatorUtils
             {
                 var canvas = __instance.Slot.GetComponentInChildren<Canvas>();
                 var verticalLayout = canvas?.Slot?.GetComponentInChildren<VerticalLayout>();
+
                 if (verticalLayout == null) return;
 
                 // Append the height of our new fields to the canvas' size
@@ -90,31 +91,23 @@ namespace AvatarCreatorUtils
                 __instance.Slot.AttachComponent<DynamicVariableSpace>().SpaceName.Value = "AvatarCreator";
                 var data = __instance.Slot.AddSlot("Data");
 
-                //Slot.CreateVariable<T> does not return the variable component
-                var name = data.AttachComponent<DynamicValueVariable<string>>();
-                var link = data.AttachComponent<DynamicValueVariable<string>>();
-                var versionText = data.AttachComponent<DynamicValueVariable<string>>();
-
-                name.VariableName.Value = "AvatarCreator/AvatarName";
-                link.VariableName.Value = "AvatarCreator/Link";
-                versionText.VariableName.Value = "AvatarCreator/VersionText";
-
-                var thumbnail = data.AttachComponent<AssetLoader<ITexture2D>>();
-                thumbnail.Asset.SyncWithVariable("AvatarCreator/Thumbnail");
-
-                //ui.NestInto(ui.Root[0]);
-
                 ui.Style.MinHeight = 24f;
                 ui.Text("Avatar Info:");
 
-                SyncMemberEditorBuilder.Build(name.Value, "Avatar Name", null, ui);
-                SyncMemberEditorBuilder.Build(link.Value, "Avatar Link", null, ui);
-                SyncMemberEditorBuilder.Build(versionText.Value, "Version Text", null, ui);
+                VariableEditorField<string>("AvatarCreator/AvatarName", "Avatar Name", data, ui);
+                VariableEditorField<string>("AvatarCreator/Link", "Avatar Link", data, ui);
+                VariableEditorField<string>("AvatarCreator/VersionText", "Version Text", data, ui);
 
                 ui.Style.MinHeight = 96f;
+                var thumbnail = data.AttachComponent<AssetLoader<ITexture2D>>();
+                thumbnail.Asset.SyncWithVariable("AvatarCreator/Thumbnail");
                 SyncMemberEditorBuilder.Build(thumbnail.Asset, "Avatar Thumbnail", null, ui);
-
             }
+        }
+        private static void VariableEditorField<T>(string name, string label, Slot data, UIBuilder ui) {
+            var variable = data.AttachComponent<DynamicValueVariable<T>>();
+            variable.VariableName.Value = name;
+            SyncMemberEditorBuilder.Build(variable.Value, label, null, ui);
         }
 
         private static void SetupAbout(Slot data, Slot root)
@@ -148,7 +141,7 @@ namespace AvatarCreatorUtils
             }
 
             Slot about = root.FindChild("About");
-            if (about != null) about.OrderOffset = -10;
+            about?.OrderOffset = -10;
         }
 
         private static void TryAddComment(Slot avatarCreatorData, Slot AvatarRoot, string variableName)
