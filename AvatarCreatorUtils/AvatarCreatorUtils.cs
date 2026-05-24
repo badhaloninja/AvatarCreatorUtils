@@ -23,14 +23,12 @@ namespace AvatarCreatorUtils
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<string> AvatarVariableSpaceName = new("avatar_variable_space_name", "Avatar variable space name", () => "Avatar");
 
-        private static ModConfiguration config;
         public override void OnEngineInit()
         {
             Harmony harmony = new("ninja.badhalo.AvatarCreatorUtils");
             harmony.PatchAll();
-
-            config = GetConfiguration();
         }
+
         [HarmonyPatch]
         class Patches
         {
@@ -40,7 +38,7 @@ namespace AvatarCreatorUtils
             [HarmonyPatch(typeof(VRIKAvatar), "EnsurePoseNode")]
             public static void CleanupProxies(VRIKAvatar __instance, AvatarPoseNode __result)
             {
-                if (!config.GetValue(GroupProxies)) return;
+                if (!GroupProxies.Value) return;
                 __result.Slot.Parent = __instance.Slot.FindChildOrAdd("Proxies");
             }
 
@@ -58,9 +56,9 @@ namespace AvatarCreatorUtils
                 avatarCreatorRef.TryGetTarget(out AvatarCreator instance);
                 if (instance == null) return;
 
-                if (config.GetValue(AddVariableSpace))
+                if (AddVariableSpace.Value)
                 {
-                    root.GetComponentOrAttach<DynamicVariableSpace>().SpaceName.Value = config.GetValue(AvatarVariableSpaceName);
+                    root.GetComponentOrAttach<DynamicVariableSpace>().SpaceName.Value = AvatarVariableSpaceName.Value;
                 }
 
                 if (TryReadDynamicValue(instance.Slot, "AvatarCreator/AvatarName", out string avatarName) && avatarName != null)
@@ -124,9 +122,9 @@ namespace AvatarCreatorUtils
                 var thumbnailSource = root.AttachComponent<ItemTextureThumbnailSource>();
 
 
-                if (config.GetValue(AddVariableSpace))
+                if (AddVariableSpace.Value)
                 {
-                    var variableSpace = config.GetValue(AvatarVariableSpaceName);
+                    var variableSpace = AvatarVariableSpaceName.Value;
                     var variablePrefix = string.IsNullOrEmpty(variableSpace) ? "" : variableSpace + "/";
                     var thumbnailVariable = variablePrefix + "Thumbnail";
 
