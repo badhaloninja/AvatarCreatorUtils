@@ -5,32 +5,31 @@ using FrooxEngine.FinalIK;
 using FrooxEngine.CommonAvatar;
 using FrooxEngine.UIX;
 using Elements.Core;
-using System;
 
 namespace AvatarCreatorUtils
 {
     public class AvatarCreatorUtils : ResoniteMod
     {
-        public override string Name => "AvatarCreatorUtils";
-        public override string Author => "badhaloninja";
-        public override string Version => "2.0.0";
-        public override string Link => "https://github.com/badhaloninja/AvatarCreatorUtils";
+        public override string Name => PluginMetadata.NAME;
+        public override string Author => PluginMetadata.AUTHORS;
+        public override string Version => PluginMetadata.VERSION;
+        public override string Link => PluginMetadata.REPOSITORY_URL;
 
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<bool> GroupProxies = new("group_proxies", "Put proxies under a 'Proxies' root", () => true);
+        private static readonly ModConfigurationKey<bool> GroupProxies = new("group_proxies", $"Settings.{PluginMetadata.GUID}.GroupProxies.Description", () => true);
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<bool> AddVariableSpace = new("add_avatar_variable_space", "Add an Avatar variable space", () => true);
+        private static readonly ModConfigurationKey<bool> AddVariableSpace = new("add_avatar_variable_space", $"Settings.{PluginMetadata.GUID}.AddVariableSpace.Description", () => true);
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<string> AvatarVariableSpaceName = new("avatar_variable_space_name", "Avatar variable space name", () => "Avatar");
+        private static readonly ModConfigurationKey<string> AvatarVariableSpaceName = new("avatar_variable_space_name", $"Settings.{PluginMetadata.GUID}.AvatarVariableSpaceName.Description", () => "Avatar");
 
         public override void OnEngineInit()
         {
-            Harmony harmony = new("ninja.badhalo.AvatarCreatorUtils");
+            Harmony harmony = new(PluginMetadata.GUID);
             harmony.PatchAll();
         }
 
         [HarmonyPatch]
-        class Patches
+        sealed class Patches
         {
             public static WeakReference<AvatarCreator> avatarCreatorRef = new(null);
 

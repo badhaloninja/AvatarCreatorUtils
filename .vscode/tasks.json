@@ -1,0 +1,32 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			// This is called by the Launch configuration
+			// dotnet run does not currently parse properties for launchSettings
+			// vscode's C# Dev tools do respect these, however I am using vscodium
+			// So here I am reading the properties myself and launching explicitly
+			// https://github.com/dotnet/sdk/issues/50157
+			"label": "launch-pwsh",
+			"type":"shell",
+			"command": [
+				"$properties = (dotnet msbuild ${workspaceFolder}/AvatarCreatorUtils/AvatarCreatorUtils.csproj -getProperty:AppPath,AppName | Out-String | ConvertFrom-Json).Properties;",
+				"$Executable = \\\"$($properties.AppPath + $properties.AppName).exe\\\";",
+				"Start-Process -FilePath $Executable -WorkingDirectory $properties.AppPath -ArgumentList \\\"-LoadAssembly `\\\"Libraries/$($properties.AppName)ModLoader.dll`\\\" -Screen -Invisible -DoNotAutoLoadHome -SkipIntroTutorial -NeverSaveSettings -NeverSaveDash\\\""
+			],
+			"dependsOn": "build",
+			"hide": true,
+		},
+		{
+			"label": "build",
+			"type":"shell",
+			"command": [
+				"dotnet build -c=\"Release\"",
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}

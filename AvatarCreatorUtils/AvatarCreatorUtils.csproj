@@ -1,81 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <AppName>Resonite</AppName>
-    <ModLoaderShort>rml</ModLoaderShort>
+	<ItemGroup>
+		<None Include="Properties\launchSettings.json" />
+		<!-- Locales must be embedded as {Namespace.Locale.FILENAME.json} -->
+		<EmbeddedResource Include="..\Locale\*.json" Visible="false" LinkBase="Locale" />
+	</ItemGroup>
 
-    <Product>AvatarCreatorUtils</Product>
-    <Version>2.0.0</Version>
-
-    <Company>badhaloninja</Company>
-    <Copyright>Copyright © $(Company) 2025</Copyright>
-
-    <Authors>$(Company)</Authors>
-    <AssemblyTitle>$(Product)</AssemblyTitle>
-    <AssemblyName>$(Product)</AssemblyName>
-
-    <RootNamespace>AvatarCreatorUtils</RootNamespace>
-    <ProjectGuid>{65815026-a5a0-4650-a622-9a8f8c458d94}</ProjectGuid>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFramework>net10.0</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <CopyLocal>false</CopyLocal>
-    <CopyToMods>true</CopyToMods>
-    <DebugSymbols Condition="'$(Configuration)'=='Release'">false</DebugSymbols>
-    <DebugType Condition="'$(Configuration)'=='Release'">None</DebugType>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="Properties\launchSettings.json" />
-    <None Include="..\README.md" />
-    <None Include="..\LICENCE" />
-  </ItemGroup>
-
-  <PropertyGroup>
-    <AppPath>$(MSBuildThisFileDirectory)$(AppName)</AppPath>
-    <AppPath Condition="Exists('E:\Programs\Steam\steamapps\common\$(AppName)')">E:\Programs\Steam\steamapps\common\$(AppName)\</AppPath>
-    <AppPath Condition="Exists('E:\SteamLibrary\steamapps\common\$(AppName)')">E:\SteamLibrary\steamapps\common\$(AppName)\</AppPath>
-    <AppPath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/$(AppName)/')">$(HOME)/.steam/steam/steamapps/common/$(AppName)/</AppPath>
-    <AppPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\$(AppName)\')">C:\Program Files (x86)\Steam\steamapps\common\$(AppName)\</AppPath>
-    <AppPath Condition="Exists('P:\SteamLibrary\steamapps\common\$(AppName)')">P:\SteamLibrary\steamapps\common\$(AppName)\</AppPath>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Reference Include="$(AppName)ModLoader">
-      <HintPath>$(AppPath)$(AppName)ModLoader.dll</HintPath>
-      <HintPath>$(AppPath)Libraries\$(AppName)ModLoader.dll</HintPath>
-    </Reference>
-    <Reference Include="HarmonyLib">
-      <HintPath>$(AppPath)$(ModLoaderShort)_libs\0Harmony.dll</HintPath>
-      <HintPath Condition="Exists('$(AppPath)0Harmony.dll')">$(AppPath)0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="FrooxEngine">
-      <HintPath>$(AppPath)FrooxEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="SkyFrost.Base">
-      <HintPath>$(AppPath)SkyFrost.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Elements.Core">
-      <HintPath>$(AppPath)Elements.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="ProtoFluxBindings">
-      <HintPath>$(AppPath)ProtoFluxBindings.dll</HintPath>
-    </Reference>
-    <Reference Include="ProtoFlux.Core">
-      <HintPath>$(AppPath)ProtoFlux.Core.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToMods)'=='true'">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AppPath)$(ModLoaderShort)_mods" />
-    <Message Text="Copied $(TargetFileName) to $(AppPath)$(ModLoaderShort)_mods" Importance="high" />
-  </Target>
+	<ItemGroup>
+		<PackageReference Include="ResoniteModLoader" Version="5.0.1" />
+		<PackageReference Include="Lib.Harmony" Version="2.4.2" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Reference Include="FrooxEngine" />
+		<Reference Include="Elements.Core" />
+	</ItemGroup>
+	
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(CopyToGame)'=='true' And Exists('$(AppPath)')">
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AppPath)$(ModLoaderShort)_mods" />
+		<Message Text="Copied $(TargetFileName) to $(AppPath)$(ModLoaderShort)_mods" Importance="high" />
+	</Target>
 </Project>

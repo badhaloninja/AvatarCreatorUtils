@@ -1,0 +1,16 @@
+{
+	"localeCode": "en-US",
+	"authors": ["badhaloninja"],
+	"messages": {
+		"Settings.ninja.badhalo.AvatarCreatorUtils": "Avatar Creator Utils",
+		
+		"Settings.ninja.badhalo.AvatarCreatorUtils.GroupProxies": "Group proxies",
+		"Settings.ninja.badhalo.AvatarCreatorUtils.GroupProxies.Description": "Put proxies under a 'Proxies' root",
+		
+		"Settings.ninja.badhalo.AvatarCreatorUtils.AddVariableSpace": "Add variable space",
+		"Settings.ninja.badhalo.AvatarCreatorUtils.AddVariableSpace.Description": "Add an Avatar variable space",
+		
+		"Settings.ninja.badhalo.AvatarCreatorUtils.AvatarVariableSpaceName": "Avatar variable space name",
+		"Settings.ninja.badhalo.AvatarCreatorUtils.AvatarVariableSpaceName.Description": "The default avatar variable space name to add"
+	}
+}

@@ -1,0 +1,87 @@
+<Project>
+	<PropertyGroup>
+		<CopyToGame>true</CopyToGame>
+
+		<Company>badhaloninja</Company>
+		<ReverseDomain>ninja.badhalo</ReverseDomain>
+		<Copyright>Copyright © $(Company) 2025</Copyright>
+
+		<Product>AvatarCreatorUtils</Product>
+		<VersionPrefix>2.0.0</VersionPrefix>
+
+		<Description>Options to add info to avatars during creation and clean up proxies</Description>
+		<RepositoryUrl>https://github.com/$(Company)/$(Product)</RepositoryUrl>
+		
+		<Authors>$(Company)</Authors>
+		<AssemblyTitle>$(Product)</AssemblyTitle>
+		<PackageID>$(ReverseDomain).$(Product)</PackageID>
+		<RootNamespace>$(Product)</RootNamespace>
+
+		<AppName>Resonite</AppName>
+		<ModLoaderShort>rml</ModLoaderShort>
+		<TargetFramework>net10.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Use BepInEx.ResonitePluginInfoProps to generate a metadata class from project properties 
+			<PackageID>		-> Metadata.GUID
+			<Product>		-> Metadata.NAME
+			<Version>		-> Metadata.VERSION
+			<Authors>		-> Metadata.AUTHORS
+			<RepositoryUrl> -> Metadata.REPOSITORY_URL
+		-->
+		<PackageReference Include="BepInEx.ResonitePluginInfoProps" Version="3.*" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<LangVersion>14.0</LangVersion>
+		<FileAlignment>512</FileAlignment>
+		<Deterministic>true</Deterministic>
+
+		<ImplicitUsings>enable</ImplicitUsings>
+		<EnableNETAnalyzers>True</EnableNETAnalyzers>
+		<AnalysisLevel>10.0-Recommended</AnalysisLevel>
+
+		<CopyLocal>false</CopyLocal>
+
+		<ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
+
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+		<!-- Add nuget source for BepInEx.ResonitePluginInfoProps -->
+		<RestoreAdditionalProjectSources>
+			https://nuget-modding.resonite.net/v3/index.json;
+		</RestoreAdditionalProjectSources>
+		<!-- Suppress Quality rules triggered by BepInEx.ResonitePluginInfoProps -->
+		<NoWarn>CA1707;CA1720</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(AppPath)'==''">
+		<AppPath>$(MSBuildThisFileDirectory)$(AppName)</AppPath>
+		<AppPath Condition="Exists('E:\Programs\Steam\steamapps\common\$(AppName)')">E:\Programs\Steam\steamapps\common\$(AppName)\</AppPath>
+		<AppPath Condition="Exists('E:\SteamLibrary\steamapps\common\$(AppName)')">E:\SteamLibrary\steamapps\common\$(AppName)\</AppPath>
+		<AppPath Condition="Exists('P:\SteamLibrary\steamapps\common\$(AppName)')">P:\SteamLibrary\steamapps\common\$(AppName)\</AppPath>
+		<AppPath Condition="Exists('$(HOME)/.steam/steam/steamapps/common/$(AppName)/')">$(HOME)/.steam/steam/steamapps/common/$(AppName)/</AppPath>
+		<AppPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\$(AppName)\')">C:\Program Files (x86)\Steam\steamapps\common\$(AppName)\</AppPath>
+		
+		<!--
+			Minimize search paths and add our own $(AppPath)
+			https://github.com/dotnet/msbuild/blob/e2ae90420b0fe3db1c9321470b2ef53eea9a0ba0/src/Tasks/Microsoft.Common.CurrentVersion.targets#L632-L658
+		-->
+		<AssemblySearchPaths>$(AppPath);{RawFileName};{HintPathFromItem};{TargetFrameworkDirectory}</AssemblySearchPaths>
+	</PropertyGroup>
+
+	<ItemDefinitionGroup>
+		<!-- Don't copy the referenced dlls to our output folders -->
+		<Reference>
+			<Private>false</Private>
+		</Reference>
+	</ItemDefinitionGroup>
+
+	<!-- NuGet fallback stripped game references -->
+	<ItemGroup Condition="!Exists('$(AppPath)')">
+		<PackageReference Include="Resonite.GameLibs" Version="*" PrivateAssets="all" />
+	</ItemGroup>
+</Project>
